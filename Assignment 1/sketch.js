@@ -9,6 +9,7 @@ var lives = 3;
 var music;
 var gameScreen = 0;
 var gameover;
+
 //var highscore; 
 
     
@@ -39,14 +40,32 @@ function draw() {
     /*if (gameover == true) {
 		lives = 3;
 		score = 0;
-        } else {*/
-    
+        } else {*/  
+drawStartgame();
 drawBackground();  
 drawObstacles();   
 drawBouncingobjects();
-     
+      
        
+}  
+
+
+function drawStartgame() {
+    
+    background("black");  
+    textSize(25);
+    text("Press space to start game", 125, 250);
+    if (lives < 1) {
+		gameover = true; 
+    text("Life lost press space to restart", 100, 200); 
+        document.body.onkeyup = function(e){
+    if(e.keyCode == 32){
+        resetGame();
+		startBouncing(); 
+    } 
 }
+}   
+
     //Display contents of game screen
      
 function drawBackground() {
@@ -61,6 +80,8 @@ function drawBackground() {
     //highscore = max(score, highscore);
      
 }   
+
+
 
 function drawObstacles() {
     ellipse(xpos, ypos, 50, 50); //draw ball
@@ -92,7 +113,7 @@ function drawBouncingobjects() {
   if (xpos <= 25 || xpos >= width - 25) {
     if (xspeed < 10 && xspeed > -10) { //controlling the speed
       xspeed = xspeed * (-1.2);
-    } else {
+    } else { 
       xspeed = xspeed * (-1.01);
     }
   }
@@ -103,6 +124,7 @@ function drawBouncingobjects() {
       yspeed = yspeed * (-1.01);
     }
   }
+    
   //Making the ball bounce out of bottom handle
   if (ypos >= height - 25) { 
       score++; 
@@ -122,25 +144,30 @@ function drawBouncingobjects() {
         textAlign(CENTER); 
         textStyle(BOLD);
         textSize(32);
-        lives = lives - 1; 
         text("GAME OVER TRY AGAIN", width / 2, height / 2);
         noLoop(); 
-        text("Press space to restart", 300, 400);
+        //text("Press space to restart", 300, 400);
+         
+      
+	
+    }
+}
     }    
          
+  }
     /*draws ellipses on top of screen, when game over, but could not get to work with function mousePressed
         for (let i = 0; i < 5; i++) {
     for (let j = 0; j < 6; j++) {
         ellipse(i * 100 + 50, j * 25 + 30, 55, 55);
     }*/
           
+        
       
-  }    
-} 
+ 
 
 
 //Change colours to random colours on a mouse press event
 function mousePressed() {
   fill(random(255), random(255), random(255));
   
-        }  
+        } 
