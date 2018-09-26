@@ -1,24 +1,24 @@
-{
-    “highscores”: [
-        {
-            "username": “Brent”,
-            “tries”: “5”,
-            “highscore”: “253”
-        },
-        {
-            "username": “Nicky”,
-            “tries”: “12”,
-            “highscore”: “149”
-        },
-        { 
-            "username": “Shannon”,
-            “tries”: “25”,
-            “highscore”: “59”
-        },
-        { 
-            "username": “Tracy”,
-            “tries”: “30”,
-            “highscore”: “23”
-        }
-    ] 
-}
+{  
+    "highscores":[  
+       {  
+          "username":"Brent",
+          "attempts":5,
+          "highscore":253
+       },
+       {  
+          "username":"Nicky",
+          "attempts":12,
+          "highscore":149
+       },
+       {  
+          "username":"Shannon",
+          "attempts":25,
+          "highscore":59
+       },
+       {  
+          "username":"Tracy",
+          "attempts":30,
+          "highscore":23
+       }
+    ]
+ }

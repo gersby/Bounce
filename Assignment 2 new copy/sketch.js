@@ -4,6 +4,8 @@
 // 1: Game Screen
 // 2: Game-over Screen 
 
+let highScoresData;
+
 let gameScreen = 0; 
 
 // gameplay settings
@@ -48,8 +50,8 @@ function preload() { //image drawn on background and background music
     img1 = loadImage("Images/background.jpg");
     img2 = loadImage("Images/desert.png");
     img3 = loadImage("Images/gameover1.png");
-    music = loadSound("Sound/mario.mp3");
-    data = loadJSON('highscores.json');
+    //music = loadSound("Sound/mario.mp3");
+    highScoresData = loadJSON('highscores.json');
   
 }          
   
@@ -67,7 +69,7 @@ function setup() {
   racketColor = color(0);
   wallColors = color('lightgreen')
     alien = createSprite(200, 200, 50, 50);   
-    alien.addAnimation('run','Images/alien1.png', 'Images/alien27.png');
+    alien.addAnimation('run','Images/Alien/alien1.png', 'Images/Alien/alien27.png');
 }
  
 
@@ -93,11 +95,29 @@ function initScreen() {
   textAlign(CENTER);
   fill('pink');
   textSize(70);
-  text("Power Ball", width/2, height/2);
+  text("Power Balls", width/2, 120);
   fill('black');
   textSize(30); 
   text("Click to start", width/2, height-30);
+  listHighScores(); 
 }
+
+function listHighScores() {
+  fill('yellow');
+  text("Highscores", width/2, 200);
+  textSize(16);
+  for (let i=0; i < highScoresData.highscores.length; i++) {
+    fill('white');
+    textAlign(LEFT);
+    text(highScoresData.highscores[i].username, 230, 230+(i*20));
+    textAlign(RIGHT);
+    text(highScoresData.highscores[i].highscore, 150, 230+(i*20));
+    text(' (' + highScoresData.highscores[i].attempts + ' attempts)', 400, 230+(i*20));
+  }
+  
+}
+
+
 function gameplayScreen() {
   background('lightblue');  
   image(img2, 0, 0, img2.width / 2, img2.height / 2);
