@@ -4,11 +4,14 @@
 // 1: Game Screen
 // 2: Game-over Screen 
 
-let highScoresData;
-
-let gameScreen = 0; 
+//highscore and sounds
+let highScoresData;  
+let mySound; 
+let mySound2;
+let mySound3;  
 
 // gameplay settings
+let gameScreen = 0; 
 let gravity = 0.3;
 let airfriction = 0.00001;
 let friction = 0.1;
@@ -44,34 +47,46 @@ let walls = [];
     
 //sprites
 let alien;
-let alienSpeed = 1; 
+let alienSpeed = 1;
+let eye;
+let coin;
 
-function preload() { //image drawn on background and background music
-    img1 = loadImage("Images/background.jpg");
-    img2 = loadImage("Images/desert.png");
-    img3 = loadImage("Images/gameover1.png");
-    //music = loadSound("Sound/mario.mp3");
+function preload() { //image drawn on background and background sound
+    img1 = loadImage('Images/Background/background.jpg');
+    img2 = loadImage('Images/Background/desert.png');
+    img3 = loadImage('Images/Background/gameover1.png');
     highScoresData = loadJSON('highscores.json');
-  
-}          
-  
+    soundFormats('mp3', 'ogg');
+    mySound = loadSound('Sound/bounce.mp3');
+    mySound2 = loadSound('Sound/gameover.mp3');
+    mySound3 = loadSound('Sound/score.mp3');
+       
+}                
+   
 /********* SETUP BLOCK *********/
 
 function setup() {
-  //music.play(); 
   createCanvas(500, 500);
+  
+  //mySound.setVolume(0.8); 
+  //mySound.playbackRate=2;       
+  //mySound.play();      
+  //mySound.loop();     
+     
+    
   // set the initial coordinates of the ball
   ballX=width/4;
   ballY=height/5;
-  smooth();
-
-  ballColor = color(0);
-  racketColor = color(0);
-  wallColors = color('lightgreen')
-    alien = createSprite(200, 200, 50, 50);   
-    alien.addAnimation('run','Images/Alien/alien1.png', 'Images/Alien/alien27.png');
-}
- 
+  smooth();   
+  ballColor = color(0); 
+  racketColor = color(0);  
+  wallColors = color('lightgreen');
+  alien = createSprite(400, 400, 50, 50);   alien.addAnimation('jump','Images/Alien/alien1.png', 'Images/Alien/alien27.png');
+  eye = createSprite(400, 375, 50, 50);   eye.addAnimation('run','Images/Eye/eye1.png', 'Images/Eye/eye10.png'); 
+  coin = createSprite(330, 50, 50, 50);   coin.addAnimation('run','Images/Coin/coin1.png', 'Images/Coin/coin8.png');     
+     
+}      
+   
 
 /********* DRAW BLOCK *********/
 
@@ -79,11 +94,14 @@ function draw() {
   // Display the contents of the current screen
   if (gameScreen == 0) { 
     initScreen();
-  } else if (gameScreen == 1) { 
+  } else if (gameScreen == 1) {   
     gameplayScreen();
   } else if (gameScreen == 2) { 
     gameOverScreen();
-  }
+    mySound2.play(); 
+    mySound2.setVolume(0.5);  
+     
+  }  
 }
  
 
@@ -100,9 +118,11 @@ function initScreen() {
   textSize(30); 
   text("Click to start", width/2, height-30);
   listHighScores(); 
-}
-
-function listHighScores() {
+      
+  
+} 
+ 
+function listHighScores() { //
   fill('yellow');
   text("Highscores", width/2, 200);
   textSize(16);
@@ -117,7 +137,6 @@ function listHighScores() {
   
 }
 
-
 function gameplayScreen() {
   background('lightblue');  
   image(img2, 0, 0, img2.width / 2, img2.height / 2);
@@ -130,12 +149,17 @@ function gameplayScreen() {
   drawHealthBar(); 
   printScore();
   wallAdder();
-  wallHandler();
+  wallHandler(); 
+  mySound2.stop(); 
 }
+
 function gameOverScreen() { 
   background('black');
-  image(img3, 0, 0);  
-  textAlign(CENTER);  
+  let tintValue = map(mouseX, 0, width, 0, 255);
+  tint(tintValue, 0, 0);
+  filter(BLUR, 10);
+  image(img3, 0, 0); 
+  textAlign(CENTER);   
   fill('white'); 
   textFont("Palatino"); 
   textSize(30);
@@ -146,7 +170,6 @@ function gameOverScreen() {
   text("Click to Restart", width/2, height-30);
      
 }    
-
 
 /********* INPUTS *********/
 
@@ -160,20 +183,27 @@ function mousePressed() {
   }
 }
 
-
+ 
 /********* OTHER FUNCTIONS *********/
 
 // This method sets the necessery variables to start the game  
 function startGame() {
   gameScreen=1;
-}
+    mySound.play();
+    mySound.loop(); 
+    mySound.playbackRate=2;
+    
+} 
+
 function gameOver() {
   gameScreen=2;
+      mySound.stop();    
+
 }
 
 function restart() {
   score = 0;
-  health = maxHealth;
+  health = maxHealth; 
   ballX=width/4;
   ballY=height/5;
   lastAddTime = 0;
@@ -187,6 +217,7 @@ function drawBall() {
   drawSprites();  
     
 }
+
 function drawRacket() {
   fill(racketColor);
   rectMode(CENTER);
@@ -203,6 +234,7 @@ function wallAdder() {
     lastAddTime = millis();
   }
 }
+
 function wallHandler() {
   for (let i = 0; i < walls.length; i++) {
     wallRemover(i);
@@ -211,6 +243,7 @@ function wallHandler() {
     watchWallCollision(i);
   }
 }
+
 function wallDrawer(index) {
   let wall = walls[index];
   // get gap wall settings 
@@ -293,20 +326,31 @@ function drawHealthBar() {
   rectMode(CORNER);
   rect(ballX-(healthBarWidth/2), ballY - 30, healthBarWidth*(health/maxHealth), 5);
 }
+
 function decreaseHealth() {
   health -= healthDecrease;
   if (health <= 0) {
     gameOver();
   }
-}
+}  
+
 function addScore() {
-  score++;
+  score++;   
+}  
+ 
+function addSound() {  
+    if (score > 0) { 
+        mySound3.play();
+        mySound3.loop();
+    }
+    
 }
+
 function printScore() {
   textAlign(CENTER);
-  fill(0);
+  fill(0); 
   textSize(30); 
-  text('Score '+score, height/2, 50);
+  text('Score '+score, height/2, 50);    
 }
 
 function watchRacketBounce() {
@@ -323,39 +367,46 @@ function watchRacketBounce() {
     }
   }
 }
+
 function applyGravity() {
   ballSpeedVert += gravity;
   ballY += ballSpeedVert;
   ballSpeedVert -= (ballSpeedVert * airfriction);
 }
+
 function applyHorizontalSpeed() {
   ballX += ballSpeedHorizon;
   ballSpeedHorizon -= (ballSpeedHorizon * airfriction);
 }
+
 // ball falls and hits the floor (or other surface) 
 function makeBounceBottom(surface) {
   ballY = surface-(ballSize/2);
   ballSpeedVert*=-1;
   ballSpeedVert -= (ballSpeedVert * friction);
 }
+
 // ball rises and hits the ceiling (or other surface)
 function makeBounceTop(surface) {
   ballY = surface+(ballSize/2);
   ballSpeedVert*=-1;
   ballSpeedVert -= (ballSpeedVert * friction);
 }
+
 // ball hits object from left side
 function makeBounceLeft(surface) {
   ballX = surface+(ballSize/2);
   ballSpeedHorizon*=-1;
   ballSpeedHorizon -= (ballSpeedHorizon * friction);
 }
+
 // ball hits object from right side
 function makeBounceRight(surface) {
   ballX = surface-(ballSize/2);
   ballSpeedHorizon*=-1;
   ballSpeedHorizon -= (ballSpeedHorizon * friction);
 }
+ 
 // keep ball in the screen
 function keepInScreen() {
   // ball hits floor
